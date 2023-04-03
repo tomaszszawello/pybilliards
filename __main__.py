@@ -1,11 +1,7 @@
-""" Main file of the simulation.
-
-"""
-
-# -*- coding: utf-8 -*-
-"""bile.ipynb
-
 import math as m
+from matplotlib import pyplot as plt
+from matplotlib.animation import FuncAnimation
+import numpy as np
 
 #klasa bila
 class bila:
@@ -148,14 +144,46 @@ class stol:
           self.lista[i].time_bile[J]=self.lista[J].time_bile[i]
 
 #test
+a, b = (10, 16)
+
 bil1=bila([5,5],[1,1],1,1)
 bil2=bila([7,5],[-1,0],1,1)
-kule=stol([bil1,bil2],10,16)
+kule=stol([bil1,bil2],a,b)
 
 kule.inicjacja()
-
+'''
 for i in range(10):
   kule.ref()
   for i in kule.lista:
     print(i.R, i.V)
   print(" ")
+'''  
+#symulacja
+def symulacja(lista, a, b, T):
+  s=stol(lista,a,b)
+  s.inicjacja()
+
+  fig, ax = plt.subplots()
+  ax.set_xlim([0,a])
+  ax.set_ylim([0,b])
+  ax.set_aspect('equal')
+  ax.set_xticks([])
+  ax.set_yticks([])
+  
+  patches=[]
+  for i in range(len(lista)):
+    patches.append(plt.Circle((lista[i].R[0],lista[i].R[1]),lista[i].d))
+  for i in range(len(lista)):
+    ax.add_patch(patches[i])
+
+  def animate(i):
+    s.ref()
+    for i in range(len(lista)):
+      patches[i].center=(lista[i].R[0],lista[i].R[1])
+    return patches
+
+  ani = FuncAnimation(fig, animate, frames=int(T*60), interval=10, blit=True)
+  plt.show()
+  ani.save('bilard.gif', writer = "pillow", fps=10 )
+ 
+symulacja([bil1, bil2],a,b,10)
