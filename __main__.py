@@ -5,7 +5,8 @@ import math as m
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
-
+from matplotlib.patches import Circle
+import imageio
 def rown(A,B,C,D,E): #A=0 => B=0, A>=0, E>=0
   T=[]
   if (A!=0):
@@ -76,7 +77,7 @@ class bila:
     t=[]
 
     for i in T:
-      if (i>=0 and i<=min(b_1.t_z,b_2.t_z)):
+      if (i>=0 and i<=min(b_1.time_z,b_2.time_z)):
         t.append[i]
 
     if (len(t)==0):
@@ -84,7 +85,7 @@ class bila:
     else:
       t=sorted(t)
       for i in t:
-        if (i>=0 and i<=min(b_1.t_z,b_2.t_z)):
+        if (i>=0 and i<=min(b_1.time_z,b_2.time_z)):
           if (poch(A,B,C,D,E,i)<0):
             return i
             break
@@ -234,40 +235,36 @@ bil2=bila([7.,5.],[-5.,0.],1.,0.1)
 kule=stol([bil2,bil1],10,16,0.1)
 kule.inicjacja()
 
-for i in range(10):
-  kule.ref()
-  for i in kule.lista:
-    print(i.R, i.V)
-  print(" ")
+
   
 #symulacja
-def symulacja(lista, a, b, T):
+def symulacja(lista, a, b, klatki):
+  
+
   s=stol(lista,a,b,0.1)
   s.inicjacja()
-
-  fig, ax = plt.subplots()
+  fig = plt.figure()
+  ax = fig.add_subplot(111, aspect='equal')
   ax.set_xlim([0,a])
   ax.set_ylim([0,b])
-  ax.set_aspect('equal')
-  ax.set_xticks([])
-  ax.set_yticks([])
-  
-  patches=[]
-  for i in range(len(lista)):
-    patches.append(plt.Circle((lista[i].R[0],lista[i].R[1]),lista[i].d))
-  for i in range(len(lista)):
-    ax.add_patch(patches[i])
-
-  def animate(i):
+  for bila in lista:
+     ax.add_artist(Circle(xy=(bila.R[0], bila.R[1]), radius=bila.d))
+  fig.savefig(str(0)+'.png')
+  fig.clf()
+  for i in range (1,klatki):
     s.ref()
-    for i in range(len(lista)):
-      patches[i].center=(lista[i].R[0],lista[i].R[1])
-    return patches
-
-  ani = FuncAnimation(fig, animate, frames=int(T*60), interval=10, blit=True)
-  plt.show()
-  ani.save('bilard.gif', writer = "pillow", fps=10 )
- 
-a, b = (10, 16)
-
-symulacja([bil1, bil2],a,b,1000)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, aspect='equal')
+    ax.set_xlim([0,a])
+    ax.set_ylim([0,b])
+    for bila in lista:
+     ax.add_artist(Circle(xy=(bila.R[0], bila.R[1]), radius=bila.d))
+    fig.savefig(str(i)+'.png')
+    fig.clf()
+klatki=10
+symulacja([bil1,bil2],16,16,klatki)
+frames=[]
+for i in range(0,klatki):
+  image = imageio.v2.imread(str(i)+'.png')
+  frames.append(image)
+imageio.mimsave('example.gif', frames, duration=20)         
