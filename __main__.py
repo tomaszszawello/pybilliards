@@ -323,10 +323,10 @@ class stol:
     return k
 
 #(self,R,V,w,d=0.0286,gmu=0.1,h=0.03,masa=0.17,Mz=0.000382)
-args = [[[9.,3.],[-1.5.,0.],[1.,1.,0]],
-        [[3.,3.],[0.8., 0.],[3.,0.,2.]]]
-bil1=bila(args[0][0], args[0][1], args[0][2], args[0][3], args[0][4], args[0][5])
-bil2=bila(args[1][0], args[1][1], args[1][2], args[1][3], args[1][4], args[1][5]) 
+args = [[[9.,3.],[-1.5,0.],[1.,1.,0]],
+        [[3.,3.],[0.8, 0.],[3.,0.,2.]]]
+bil1=bila(args[0][0], args[0][1], args[0][2])
+bil2=bila(args[1][0], args[1][1], args[1][2]) 
 kule=stol([bil1, bil2],10,10,0.1)
 kule.inicjacja()
 
